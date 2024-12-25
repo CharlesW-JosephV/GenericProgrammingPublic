@@ -1,7 +1,7 @@
 //CWJ06OCT2024
 //Developing a "Generic Programming" library predominantly informed from Andrei Alexandrescu's wonderful work "Modern C++ Design" 
 //But also referencing Scott Meyer's works to approach more of a C++14 standard
-
+//CWJ24DEC2024 - took a second pass at a full rewrite to understand what was causing the issues with bound. Found and corrected.
 
 //CWJ libs
 #include "Typelist.hpp"
@@ -139,12 +139,9 @@ int main()
 	//*************************************************************************************
 	//Functors
 
-	//Here you can instantiat a functor which returns a double, and takes an int and double as arguments
-	//However attempting to call it will fail to compile with a linker error since it has no implmenetation provided
-	//Functor<double, TYPELIST_2(int, double)> myFunctor;
-	//double result = myFunctor(4, 5.6); 
+	//Functors allow for a nicer interface to manage call timing and arguments passed to functions and function objects
 
-	//Instead we use a predefined struct to give the functor an implmentation 
+	//One usecase is for an alternative calling interface into a function in a structor
 	OneArgFunctor fd; //instantiate the struct 
 	Functor<void, TYPELIST_1(int)> myOneArgFunctor(fd); //make a functor which matches the struct return and args, initalize with the struct
 	myOneArgFunctor(3); //call, should write to console 
@@ -154,8 +151,7 @@ int main()
 	Functor<void, TYPELIST_2(int, double)> cmd(f);
 	cmd(4, 4.5);
 
-	//In full transparency I'm not sure how to instantiate a functor which takes zero args
-	//But you could always pad it with a dummy argument (although that does introduce unneeded overhead) 
+	//If you'd like to assign a functor which takes zero arguments use the NullType instead of a Typelist
 
 	//Okay, looks like there are some limitations when working with a function
 	//According to Andrei Alexandrescu in Modern C++ Design I should just be able to pass in the funciton to the ctor
@@ -194,33 +190,24 @@ int main()
 	(catDog.*pVocalization)(); //should meow now
 
 	//let us now try with the Functor by leveraging MemFunHandler
-	//Somehow Andrei is able to use <> without defining types, but that's not working for me 
-	//Functor<> cmd_bark(&catDog, &CatDog::Bark), cmd_meow(&catDog, &CatDog::Meow);
-	//cmd_bark(); 
-	//cmd_meow(); 
-	//Functor<> cmd_bark(&catDog, &CatDog::Bark);
-	//but we need to use CatDogwArgs with dummy arguments as padding 
+	Functor<void, NullType> cmd_bark(&catDog, &CatDog::Bark), cmd_meow(&catDog, &CatDog::Meow);
 	std::cout << "Now with a functor:\n";
-	CatDogwArgs cDa;
-	Functor<void, TYPELIST_1(int)> cmd_bark(&cDa, &CatDogwArgs::Bark), cmd_meow(&cDa, &CatDogwArgs::Meow);
-	cmd_bark(2); //saddly padded with a dummy int 
-	cmd_meow(2);
+	cmd_bark();
+	cmd_meow();
 
 	//now test out the assignemnet operator, overwrite the bark command with meow 
 	cmd_bark = cmd_meow;
 	std::cout << "Overwrote bark with meow, calling again: \n";
-	cmd_bark(2); //now will generate meow
-	cmd_meow(2);
+	cmd_bark(); //now will generate meow
+	cmd_meow();
 
-
-	//CWJ08OCT2024 - binding is almost ready, just having some issues with cloneing abstract base classes that requires more thought
+	//The most useful aspect is that particular arguments can be bound with a given value
+	//So that less information is needed at call time to perform the work of the function 
 	//Now let us test binding along with implicit type conversions
-	//Functor<const char*, TYPELIST_2(char, int)> f1(&Fun); //remember to pass as a function pointer!
-	//Functor<std::string, TYPELIST_1(double)> f2(BindFirst(f1, 9)); 
-	//f2(12);
-
-
-
+	Functor<const char*, TYPELIST_2(char, int)> f1(&Fun); //remember to pass as a function pointer!
+	Functor<std::string, TYPELIST_1(double)> f2(BindFirst(f1, 9));
+	std::cout << "Now calling a functor with the first argument bound\n";
+	f2(12);
 
 	return(0); //all is good 
 }

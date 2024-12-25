@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Functor">
+      <UniqueIdentifier>{36443834-6ff4-4c64-a1f3-34044ec31056}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -24,7 +27,22 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Functor.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Functor</Filter>
+    </ClInclude>
+    <ClInclude Include="BinderFirst.hpp">
+      <Filter>Header Files\Functor</Filter>
+    </ClInclude>
+    <ClInclude Include="FunctorHandler.hpp">
+      <Filter>Header Files\Functor</Filter>
+    </ClInclude>
+    <ClInclude Include="MemFunHandler.hpp">
+      <Filter>Header Files\Functor</Filter>
+    </ClInclude>
+    <ClInclude Include="FunctorImpl.hpp">
+      <Filter>Header Files\Functor</Filter>
+    </ClInclude>
+    <ClInclude Include="FunctorFunctor.hpp">
+      <Filter>Header Files\Functor</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
