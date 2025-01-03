@@ -78,10 +78,10 @@ namespace Hephaestus
 	class FunctorImpl<R, TYPELIST_6(P1, P2, P3, P4, P5, P6)>
 	{
 	public:
-		virtual R operator()(P1, P2, P3, P4, P5, P6) = 0;
-		//virtual FunctorImpl* Clone() const = 0;
-		virtual std::unique_ptr<FunctorImpl> Clone() const = 0;
 		virtual ~FunctorImpl() {};
+		virtual R operator()(P1, P2, P3, P4, P5, P6) = 0;
+		virtual std::unique_ptr<FunctorImpl> clone() const = 0;
+
 	};
 
 	template<typename R, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7>
